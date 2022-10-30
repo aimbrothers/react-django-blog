@@ -25,4 +25,5 @@ urlpatterns = [
     path('api/logout/', users_views.LogoutView.as_view()),
     path('api/register/', users_views.RegisterView.as_view()),
     path('api/posts/', posts_views.PostView.as_view()),
+    path('api/posts/<int:pk>/', posts_views.PostView.as_view()),
 ]

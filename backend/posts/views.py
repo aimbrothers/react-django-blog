@@ -13,6 +13,7 @@ class PostView(views.APIView):
 
         if posts:
             data = PostSerializer(posts, many=True)
+
             return Response(data.data, status=status.HTTP_200_OK)
         else:
             return Response([], status=status.HTTP_200_OK)
@@ -24,3 +25,29 @@ class PostView(views.APIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def put(self, request, format=None, pk=None):
+        post = Post.objects.get(pk=pk)
+        serializer = PostSerializer(
+            instance=post, data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+    def delete(self, request, format=None, pk=None):
+        post = Post.objects.get(pk=pk)
+
+        current_user = request.user
+
+        if post.author and current_user.username and post.author != current_user.username:
+            msg = 'You cannot delete post from other users.'
+
+            return Response({ msg }, status=status.HTTP_400_BAD_REQUEST)
+
+        if post:
+            post.delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
