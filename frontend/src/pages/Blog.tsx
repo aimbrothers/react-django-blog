@@ -1,15 +1,10 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { postModel } from '../models/postModel';
 
-type Posts = {
-    id: number;
-    title: string;
-    content: string;
-    author: string;
-  };
-  
+
   type GetPosts = {
-    data: Posts[];
+    data: postModel[];
   };
 
 const Blog: React.FC = () => {
