@@ -36,3 +36,11 @@ class PostSerializer(serializers.ModelSerializer):
             msg = 'You cannot update post from other users.'
 
             raise serializers.ValidationError(msg, code='authorization')
+
+
+class PostShortSerializer(serializers.ModelSerializer):
+    shortDescription = serializers.CharField(source='short_description')
+    
+    class Meta:
+        model = Post
+        fields = ('id', 'title', 'author', 'shortDescription')

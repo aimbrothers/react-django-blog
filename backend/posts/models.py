@@ -19,3 +19,10 @@ class Post(models.Model):
     @property
     def author(self):
         return self.user.username
+
+    @property
+    def short_description(self):
+        if self.content and len(self.content) >= 128:
+            return self.content[:125] + '...'
+        else:
+            return self.content
