@@ -2,18 +2,25 @@ from rest_framework import permissions, status, views
 from rest_framework.response import Response
 
 from .models import Post
-from .serializers import PostSerializer
+from .serializers import PostSerializer, PostShortSerializer
 
 
 class PostView(views.APIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    def get(self, request):
-        posts = Post.objects.all()
+    def get(self, request, pk=None):
+        if pk:
+            post = Post.objects.get(pk=pk)
+            
+            if post:
+                data = PostSerializer(post)
+        else:
+            posts = Post.objects.all()
 
-        if posts:
-            data = PostSerializer(posts, many=True)
+            if posts:
+                data = PostShortSerializer(posts, many=True)
 
+        if data:
             return Response(data.data, status=status.HTTP_200_OK)
         else:
             return Response([], status=status.HTTP_200_OK)
