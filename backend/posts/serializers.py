@@ -40,7 +40,9 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostShortSerializer(serializers.ModelSerializer):
     shortDescription = serializers.CharField(source='short_description')
-    
+    tags = SlugRelatedGetOrCreateField(
+        many=True, slug_field='label', queryset=Tag.objects.all())
+
     class Meta:
         model = Post
-        fields = ('id', 'title', 'author', 'shortDescription')
+        fields = ('id', 'title', 'author', 'shortDescription', 'tags')
