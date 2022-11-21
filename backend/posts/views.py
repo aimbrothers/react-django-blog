@@ -1,17 +1,19 @@
-from rest_framework import permissions, status, views
+from rest_framework import status, views, permissions
 from rest_framework.response import Response
 
+from backend.utils.authentications import SafeGetJWTAuthentication
 from .models import Post
 from .serializers import PostSerializer, PostShortSerializer
 
 
 class PostView(views.APIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    authentication_classes = (SafeGetJWTAuthentication,)
 
     def get(self, request, pk=None):
         if pk:
             post = Post.objects.get(pk=pk)
-            
+
             if post:
                 data = PostSerializer(post)
         else:
@@ -50,7 +52,7 @@ class PostView(views.APIView):
         if post.author and current_user.username and post.author != current_user.username:
             msg = 'You cannot delete post from other users.'
 
-            return Response({ msg }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({msg}, status=status.HTTP_400_BAD_REQUEST)
 
         if post:
             post.delete()
