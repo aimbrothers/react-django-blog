@@ -1,10 +1,11 @@
 from django.db import models
 
+from backend.utils.models import BaseModel
 from users.models import BackendUser
 from tags.models import Tag
 
 
-class Post(models.Model):
+class Post(BaseModel):
     title = models.CharField(max_length=255)
     content = models.TextField()
     user = models.ForeignKey(BackendUser, on_delete=models.CASCADE)

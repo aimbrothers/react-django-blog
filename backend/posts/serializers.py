@@ -19,7 +19,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'title', 'content', 'author', 'tags')
+        fields = ('id', 'title', 'content', 'author',
+                  'tags', 'created_at', 'updated_at')
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
@@ -45,4 +46,5 @@ class PostShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'title', 'author', 'shortDescription', 'tags')
+        fields = ('id', 'title', 'author', 'shortDescription',
+                  'tags', 'created_at', 'updated_at')

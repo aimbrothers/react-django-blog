@@ -1,7 +1,9 @@
 from django.db import models
 
+from backend.utils.models import BaseModel
 
-class Tag(models.Model):
+
+class Tag(BaseModel):
     label = models.CharField(max_length=64)
 
     def __str__(self):

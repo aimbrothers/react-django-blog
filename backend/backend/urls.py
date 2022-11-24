@@ -29,3 +29,4 @@ urlpatterns = [
     path('api/posts/', posts_views.PostView.as_view()),
     path('api/posts/<int:pk>/', posts_views.PostView.as_view()),
 ]
+ 
