@@ -20,6 +20,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from users import views as users_views
 from posts import views as posts_views
+from tags import views as tags_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +29,6 @@ urlpatterns = [
     path('api/register/', users_views.RegisterView.as_view()),
     path('api/posts/', posts_views.PostView.as_view()),
     path('api/posts/<int:pk>/', posts_views.PostView.as_view()),
+    path('api/tags/', tags_views.TagView.as_view()),
 ]
  

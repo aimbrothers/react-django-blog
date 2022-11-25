@@ -1,16 +1,26 @@
 from rest_framework import status, views, permissions, filters
 from rest_framework.response import Response
+from django_filters import rest_framework as django_filters
 
 from backend.utils.authentications import SafeGetJWTAuthentication
 from .models import Post
 from .serializers import PostSerializer, PostShortSerializer
 
 
+class PostFilter(django_filters.FilterSet):
+    tags = django_filters.CharFilter(field_name='tags__label')
+    
+    class Meta:
+        model = Post
+        fields = ('tags',)
+
+
 class PostView(views.APIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     authentication_classes = (SafeGetJWTAuthentication,)
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, django_filters.DjangoFilterBackend,)
     search_fields = ['title', 'content', 'user__username', 'tags__label']
+    filterset_class = PostFilter
 
     def filter_queryset(self, queryset):
         for backend in list(self.filter_backends):
