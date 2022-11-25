@@ -48,3 +48,4 @@ class PostShortSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'title', 'author', 'shortDescription',
                   'tags', 'created_at', 'updated_at')
+        ordering = ('created_at',)

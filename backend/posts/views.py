@@ -1,4 +1,4 @@
-from rest_framework import status, views, permissions
+from rest_framework import status, views, permissions, filters
 from rest_framework.response import Response
 
 from backend.utils.authentications import SafeGetJWTAuthentication
@@ -9,21 +9,30 @@ from .serializers import PostSerializer, PostShortSerializer
 class PostView(views.APIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     authentication_classes = (SafeGetJWTAuthentication,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ['title', 'content', 'user__username', 'tags__label']
+
+    def filter_queryset(self, queryset):
+        for backend in list(self.filter_backends):
+            queryset = backend().filter_queryset(self.request, queryset, self)
+        
+        return queryset
 
     def get(self, request, pk=None):
         if pk:
             post = Post.objects.get(pk=pk)
 
             if post:
-                data = PostSerializer(post)
+                serializer = PostSerializer(post)
         else:
-            posts = Post.objects.all()
+            posts_queryset = Post.objects.all()
+            filtered_posts_queryset = self.filter_queryset(posts_queryset)
 
-            if posts:
-                data = PostShortSerializer(posts, many=True)
+            if posts_queryset:
+                serializer = PostShortSerializer(filtered_posts_queryset, many=True)
 
-        if data:
-            return Response(data.data, status=status.HTTP_200_OK)
+        if serializer:
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response([], status=status.HTTP_200_OK)
 
