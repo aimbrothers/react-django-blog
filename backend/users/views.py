@@ -17,3 +17,12 @@ class RegisterView(views.APIView):
             backend_user)
 
         return Response(backend_user_serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CurrentUserView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        serializer = serializers.BackendUserSerializer(request.user)
+
+        return Response(serializer.data)
